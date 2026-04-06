@@ -42,26 +42,26 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary p-4 sm:p-6">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-background to-secondary p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md">
         <div className="space-y-6">
           {/* Logo y titulo */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">BizManager</h1>
-            <p className="text-muted-foreground">Gestión inteligente para tu negocio</p>
+          <div className="text-center space-y-1 sm:space-y-2">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">BizManager</h1>
+            <p className="text-xs sm:text-sm lg:text-base text-muted-foreground px-2">Gestión inteligente para tu negocio</p>
           </div>
 
-          <Card className="border-border/50 shadow-xl">
-            <CardHeader>
-              <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
-              <CardDescription>
+          <Card className="border-border/50 shadow-xl w-full">
+            <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+              <CardTitle className="text-xl sm:text-2xl">Iniciar Sesión</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Ingresa tus credenciales para acceder al dashboard
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Correo Electrónico</Label>
+                  <Label htmlFor="email" className="text-sm sm:text-base">Correo Electrónico</Label>
                   <Input
                     id="email"
                     type="email"
@@ -69,11 +69,11 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-10"
+                    className="h-9 sm:h-10 text-sm sm:text-base"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Contraseña</Label>
+                  <Label htmlFor="password" className="text-sm sm:text-base">Contraseña</Label>
                   <Input
                     id="password"
                     type="password"
@@ -81,27 +81,27 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-10"
+                    className="h-9 sm:h-10 text-sm sm:text-base"
                   />
                 </div>
                 {error && (
-                  <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
-                    <p className="text-sm text-destructive">{error}</p>
+                  <div className="p-2 sm:p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
+                    <p className="text-xs sm:text-sm text-destructive">{error}</p>
                   </div>
                 )}
                 <Button 
                   type="submit" 
-                  className="w-full h-10 font-medium"
+                  className="w-full h-9 sm:h-10 text-sm sm:text-base font-medium"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                 </Button>
               </form>
 
-              <div className="mt-6 pt-6 border-t border-border">
-                <div className="text-center space-y-3">
+              <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border">
+                <div className="text-center space-y-2 sm:space-y-3">
                   <p className="text-xs text-muted-foreground">Demo - Solo superadmin</p>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
                     <p><span className="font-medium">Email:</span> jhairoswaldo@gmail.com</p>
                     <p><span className="font-medium">Contraseña:</span> Endgamer123_</p>
                   </div>

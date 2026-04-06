@@ -37,8 +37,8 @@ export default function DashboardPage() {
 
   if (currentUser?.role === 'super_admin') {
     return (
-      <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total Negocios"
             value={businesses.length}
@@ -99,8 +99,8 @@ export default function DashboardPage() {
 
   if (currentBusiness?.type === 'barbershop') {
     return (
-      <div className="space-y-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Citas de Hoy"
             value={todayAppointments}
@@ -127,7 +127,7 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
           <Card className="border-border bg-card">
             <CardHeader>
               <CardTitle className="text-foreground">Próximas Citas</CardTitle>
@@ -180,8 +180,8 @@ export default function DashboardPage() {
 
   // Restaurant Dashboard (default)
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Pedidos Activos"
           value={activeOrders}

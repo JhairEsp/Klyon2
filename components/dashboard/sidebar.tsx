@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/lib/app-context'
+import { useState } from 'react'
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -14,7 +15,9 @@ import {
   Settings,
   LogOut,
   Building2,
-  ClipboardList
+  ClipboardList,
+  Menu,
+  X
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -43,6 +46,7 @@ const adminLinks = [
 export function Sidebar() {
   const pathname = usePathname()
   const { currentUser, currentBusiness, logout } = useApp()
+  const [isOpen, setIsOpen] = useState(false)
 
   const getLinks = () => {
     if (currentUser?.role === 'super_admin') return adminLinks
@@ -55,7 +59,30 @@ export function Sidebar() {
   const initials = currentUser?.name.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
+    <>
+      {/* Mobile Menu Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-50 lg:hidden"
+      >
+        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={cn(
+        "fixed lg:static top-0 left-0 h-screen w-64 flex flex-col bg-sidebar border-r border-sidebar-border transition-all duration-300 z-40",
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-5">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
@@ -89,6 +116,7 @@ export function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={() => setIsOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive 
@@ -143,5 +171,6 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   )
 }
