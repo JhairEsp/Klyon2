@@ -93,27 +93,21 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000)
 
-## 👤 Usuarios de Demo
+## 👤 Cuenta de Super Admin
 
-### Super Admin
 ```
 Email: jhairoswaldo@gmail.com
 Contraseña: Endgamer123_
+Rol: Super Admin
 ```
 
-### Admin Restaurante
-```
-Email: admin@trattoria.com
-Contraseña: Endgamer123_
-Negocio: La Trattoria
-```
+Con esta cuenta podrás:
+- Crear nuevos negocios (restaurantes y barberías)
+- Crear admins para cada negocio
+- Gestionar usuarios globales
+- Ver reportes de todos los negocios
 
-### Admin Barbería
-```
-Email: admin@barbershop.com
-Contraseña: Endgamer123_
-Negocio: Barbershop Elite
-```
+Los admins de cada negocio los crearás tú desde esta cuenta.
 
 ## 📁 Estructura del Proyecto
 
