@@ -1,10 +1,11 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 import type { 
   User, Business, Table, Order, OrderItem, 
   Barber, Appointment, QueueEntry, OrderItemStatus 
 } from './types'
+import { createClient } from './supabase/client'
 import { 
   users as mockUsers, 
   businesses as mockBusinesses, 
@@ -18,8 +19,9 @@ import {
 interface AppContextType {
   // Auth
   currentUser: User | null
-  login: (email: string) => boolean
-  logout: () => void
+  login: (email: string, password: string) => Promise<boolean>
+  logout: () => Promise<void>
+  checkAuth: () => Promise<void>
   
   // Business
   currentBusiness: Business | null
@@ -65,22 +67,108 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments)
   const [queue, setQueue] = useState<QueueEntry[]>(mockQueue)
 
-  const login = useCallback((email: string) => {
-    const user = mockUsers.find(u => u.email === email)
-    if (user) {
-      setCurrentUser(user)
-      if (user.business_id) {
-        const business = businesses.find(b => b.id === user.business_id)
-        if (business) setCurrentBusiness(business)
-      }
-      return true
-    }
-    return false
-  }, [businesses])
+  // Verificar sesión al montar
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
-  const logout = useCallback(() => {
-    setCurrentUser(null)
-    setCurrentBusiness(null)
+  const checkAuth = useCallback(async () => {
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        // Obtener detalles del usuario de la BD
+        const { data: userData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('email', user.email)
+          .single()
+
+        if (userData) {
+          const mockUser = mockUsers.find(u => u.email === userData.email) || {
+            id: userData.id,
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+            organization_id: userData.organization_id,
+            business_id: userData.business_id,
+            avatar_url: userData.avatar_url,
+            active: userData.active,
+            created_at: userData.created_at
+          }
+          setCurrentUser(mockUser as User)
+          
+          if (mockUser.business_id) {
+            const business = mockBusinesses.find(b => b.id === mockUser.business_id)
+            if (business) setCurrentBusiness(business)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking auth:', error)
+    }
+  }, [])
+
+  const login = useCallback(async (email: string, password: string) => {
+    try {
+      const supabase = createClient()
+      
+      // Login con Supabase Auth
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      if (error) {
+        console.error('Login error:', error.message)
+        return false
+      }
+
+      // Obtener datos del usuario de la BD
+      const { data: userData } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+      if (userData) {
+        const mockUser = mockUsers.find(u => u.email === userData.email) || {
+          id: userData.id,
+          email: userData.email,
+          name: userData.name,
+          role: userData.role,
+          organization_id: userData.organization_id,
+          business_id: userData.business_id,
+          avatar_url: userData.avatar_url,
+          active: userData.active,
+          created_at: userData.created_at
+        }
+        setCurrentUser(mockUser as User)
+        
+        if (mockUser.business_id) {
+          const business = mockBusinesses.find(b => b.id === mockUser.business_id)
+          if (business) setCurrentBusiness(business)
+        }
+        return true
+      }
+      
+      return false
+    } catch (error) {
+      console.error('Login error:', error)
+      return false
+    }
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      setCurrentUser(null)
+      setCurrentBusiness(null)
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }, [])
 
   const toggleBusinessActive = useCallback((businessId: string) => {
@@ -199,6 +287,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       currentUser,
       login,
       logout,
+      checkAuth,
       currentBusiness,
       businesses,
       setCurrentBusiness,

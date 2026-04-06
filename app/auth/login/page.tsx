@@ -1,6 +1,5 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -13,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useApp } from '@/lib/app-context'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -20,20 +20,20 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { login } = useApp()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      if (signInError) throw signInError
-      router.push('/dashboard')
+      const success = await login(email, password)
+      if (success) {
+        router.push('/dashboard')
+      } else {
+        setError('Usuario o contraseña inválidos')
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión')
     } finally {
